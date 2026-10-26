@@ -107,3 +107,5 @@ details.sec[open]>summary::after{transform:translateY(-30%) rotate(-135deg)}
 .fmpick{display:flex;gap:6px;align-items:center}
 .fmpick select{flex:1;min-width:0}
 .mrow .star{flex:none}
+
+.pulse{animation:pulse 1s ease-in-out 3;box-shadow:0 0 0 3px var(--acc)}@keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}.dirrow{display:flex;gap:6px;align-items:flex-start}.dirrow textarea{flex:1;min-width:0}.dirchips{flex-wrap:wrap;margin:4px 0}.diag{white-space:pre-wrap;word-break:break-all;max-height:50vh;overflow:auto;font-size:12px}
