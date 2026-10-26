@@ -1,5 +1,5 @@
 :root{--bg:#121218;--card:#1c1d26;--card2:#23242f;--line:#2e3040;--fg:#e8e8ee;--mut:#a3a7ba;--act:#c3c6d4;--acc:#8b5cf6;--acc2:#a78bfa;--user:#2e2654;--danger:#f87171;color-scheme:dark}
-*{box-sizing:border-box}html,body{overflow-x:hidden}
+*{box-sizing:border-box}html,body{overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(80px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
 body.inchat{padding-bottom:0}
 #main{max-width:720px;margin:auto;padding:12px 14px}h1{font-size:1.45em;margin:.4em 0 .6em}h2{font-size:1.05em;margin:1.2em 0 .5em;color:var(--acc2)}
@@ -80,3 +80,9 @@ details.sec[open]>summary::after{transform:translateY(-30%) rotate(-135deg)}
 #toast{position:fixed;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;background:#2b2c38;padding:14px;border-radius:12px;z-index:70;white-space:pre-wrap;max-height:60vh;overflow:auto;word-break:break-word}#toast.err{background:#5b1d1d;border:1px solid var(--danger)}
 #gate{position:fixed;inset:0;background:var(--bg);z-index:80;display:flex;flex-direction:column;justify-content:center;padding:24px;gap:12px}#gate[hidden],#toast[hidden],nav[hidden],[hidden]{display:none!important}
 .pv[hidden]{display:none}
+/* generator */
+#genbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}#genbox h2{margin-top:2px}
+#genbox details.sec{background:var(--card2)}#genbox .btns label{margin:4px 0}
+.gl{color:var(--mut);font-size:14px;margin:12px 0 6px}.gchips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:6px 14px;border-radius:20px;font-size:14px}.chip.on{background:#3a2f6b;border-color:var(--acc2);color:#fff}
+.genbar{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--card) 25%);padding-top:12px;z-index:3}.genbar{display:grid;grid-template-columns:1fr 1.5fr 1.5fr}.genbar button{white-space:nowrap;padding:10px 8px}
