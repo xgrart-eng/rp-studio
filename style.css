@@ -121,3 +121,4 @@ textarea,input{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 .via{font-size:11px;opacity:.65;margin-top:4px}
 #bmchips{flex-wrap:wrap}
 .pmact{display:flex;flex-direction:column;gap:4px;flex:none}
+.pebusy #pet{opacity:.55}
