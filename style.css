@@ -122,3 +122,4 @@ textarea,input{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 #bmchips{flex-wrap:wrap}
 .pmact{display:flex;flex-direction:column;gap:4px;flex:none}
 .pebusy #pet{opacity:.55}
+.exprchips{align-items:center}.exprchips .muted{font-size:.8em;margin-right:2px}
