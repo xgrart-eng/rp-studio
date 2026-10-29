@@ -1,0 +1,16 @@
+const p=require('puppeteer-core');let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,JSON.stringify(x??'').slice(0,500))}else console.log('ok',n)};const w=t=>new Promise(r=>setTimeout(r,t));
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html'])for(const two of[0,1]){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto(url);await pg.evaluate(t=>{localStorage.setItem('rp_age','ok');if(t)localStorage.setItem('twoCallWriter','1');localStorage.setItem('rp_settings',JSON.stringify({apiKey:'FAKE',baseUrl:'https://api.x.ai/v1',model:'m',imgProvider:'runware',runKey:'RK',runPreset:'pony'}))},two);await pg.reload();await w(700);
+await pg.evaluate(()=>{window.NC=0;window.SYS=[];window.fetch=async(u,o)=>{const bd=JSON.parse(o.body);if(/runware/.test(u))return new Response(JSON.stringify({data:[{taskType:'imageInference',taskUUID:(Array.isArray(bd)?bd:[bd]).find(x=>x.positivePrompt).taskUUID,imageURL:'https://x/i.jpg',imageUUID:'u'}]}),{status:200});NC++;SYS.push(bd.messages[0].content.slice(0,20));const out=/^You turn/.test(bd.messages[0].content)?'1girl, solo, sitting, smile, blush, couch, cowboy shot, soft lighting':'1girl, solo, sitting on couch, smile, blush, sweater, living room, cowboy shot, soft lighting';return new Response(`data: {"choices":[{"delta":{"content":${JSON.stringify(out)}}}]}\n\ndata: [DONE]\n\n`,{status:200,headers:{'content-type':'text/event-stream'}})};
+ window.c=pmChar(PREMADE.find(x=>x.id==='pm-claire'));curChat={id:'z',charId:c.id,messages:[{role:'user',text:'hey',id:'u0'},{role:'assistant',text:'*She sits on the couch in her sweater, smiling.*',id:'a0'}]};window.P=sceneImage(1,c)});
+await w(1500);let r=await pg.evaluate(()=>({nc:NC,dir:document.querySelector('#pe_dir')?.value,pet:document.querySelector('#pet')?.value,foc:document.activeElement?.tagName}));
+ok(`scene-first filled (two=${two})`,r.dir&&/couch/.test(r.dir)&&/couch/.test(r.pet),r);ok(`calls (two=${two})`,r.nc===(two?2:1),r);ok('no autofocus',r.foc!=='TEXTAREA'&&r.foc!=='INPUT',r);
+await pg.evaluate(()=>{curChat.sceneDir='';});
+await pg.evaluate(()=>document.querySelector('#pe_auto').click());await w(600);r=await pg.evaluate(()=>({nc:NC,pet:document.querySelector('#pet').value}));ok('auto from chat works',/couch/.test(r.pet)&&r.nc===(two?2:1),r);
+await pg.evaluate(()=>{document.querySelector('#pecn').click()});await w(300);
+// explicit direction: one call, lazy auto
+await pg.evaluate(()=>{NC=0;curChat.sceneDir='standing in kitchen, apron';window.P=sceneImage(1,c)});await w(1200);r=await pg.evaluate(()=>({nc:NC,pet:document.querySelector('#pet')?.value}));ok(`dir calls (two=${two})`,r.nc===(two?2:1)&&/kitchen/.test(r.pet),r);
+await pg.evaluate(()=>document.querySelector('#pe_auto').click());await w(600);r=await pg.evaluate(()=>({nc:NC,pet:document.querySelector('#pet').value}));ok('lazy auto on tap',r.nc===2&&/couch/.test(r.pet),r);
+ok('no errors',!errs.length,errs);await ctx.close()}
+await b.close();console.log(F?F+' FAILED':'ALL PASS')})();
