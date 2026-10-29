@@ -124,3 +124,6 @@ textarea,input{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 .pebusy #pet{opacity:.55}
 .exprchips{align-items:center}.exprchips .muted{font-size:.8em;margin-right:2px}
 #pe_dbg{font-size:12px;margin:4px 0}#pe_dbgx{white-space:pre-wrap;word-break:break-word;margin-top:4px}
+
+.pefinal{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+#pet[readonly]{opacity:.85}

@@ -1,25 +1,27 @@
 # RP Studio (mobile PWA)
-Cloud-API roleplay chat with image and video generation, for adults (18+). No server: everything is stored on your phone (localStorage + IndexedDB). API keys go only to the provider you set.
+Cloud-API roleplay chat with image and video generation, for adults only (every character is 21+; there is an age gate). There is no server: everything is stored on your phone (localStorage + IndexedDB). Each API key is sent only to its own provider.
 
 ## Files
-- `index.html`, `app.js`, `style.css`, `manifest.json`, `sw.js`, icons: the installable PWA (host on any static https host).
-- `rp-studio-single.html`: the same app in one file. Opens anywhere, but it can't be installed as a PWA.
+- `index.html`, `app.js`, `premade.js`, `style.css`, `manifest.json`, `sw.js`, icons: the installable PWA.
+- `rp-studio-single.html`: the same app in one file. It opens anywhere but can't be installed.
+- `tests/`: Puppeteer tests (see below).
 
-## Keys
-1. **OpenRouter** (chat): https://openrouter.ai/keys. Pay as you go. The default model is `x-ai/grok-4.7`, the newest Grok on OpenRouter as of Oct 2026, at about $2 per million input tokens. Older `x-ai/grok-4.x` ids also work. Any OpenAI-compatible provider works: change the Base URL.
-2. **fal.ai** (images + video): https://fal.ai/dashboard/keys. Flux dev is about $0.025 per image. Wan image-to-video (`fal-ai/wan-i2v`) is about $0.20–0.40 per clip and takes 1–3 minutes.
-- Read each provider's terms and pick providers and models whose terms allow the content you plan to make. Some fal models have a safety checker you can set in "Extra image params", for example `{"enable_safety_checker":false}`, but only where the provider allows that.
-- Replicate is in the settings, but its API blocks browser (CORS) calls. It only works through your own proxy. The "custom" image provider POSTs `{prompt}` to any endpoint you give it.
+## Defaults and keys (Settings)
+- **Chat: xAI.** Base URL `https://api.x.ai/v1`, model `grok-4`. Get a key at https://console.x.ai. Any OpenAI-compatible provider works if you change the Base URL (OpenRouter is in the provider list).
+- **Images: Runware only** (https://my.runware.ai). Settings → Images has one **★ My models** list: your saved models first, then ☆ suggestions (the curated presets). Tap a model to use it, tap ☆ to keep it, or use **Find models** to search Runware/Civitai. Paste a model AIR id (e.g. `civitai:4384@128713`) and tap **Check this model** to verify it.
+- **Video:** Runware by default (LTX-2.3). fal.ai is still available as a video fallback; its key is in the Video section.
+- Pick models whose terms allow what you make. Minors, real people and non-consensual content are prohibited. The negative prompt always blocks child/loli/young.
 
-## Image provider presets (Settings → Images)
-- **fal.ai**: `fal-ai/flux-lora` costs $0.035 per megapixel, so about $0.035 at 832×1216. `fal-ai/lora` runs SD/SDXL checkpoints and LoRAs from Hugging Face or a URL. The fal key is also used for video.
-- **Runware**: use any Civitai model by its AIR id (`civitai:MODEL@VERSION`). Images cost from about $0.003. NSFW checking is optional (`checkNSFW`).
-- **Novita AI**: SD/SDXL checkpoints and LoRAs. NSFW detection is optional (`enable_nsfw_detection`, $0.0015 extra per image).
-- "Turn provider safety checker off" sends the provider's own flag. It only has an effect where that provider allows it. Every provider bans minors, non-consensual imagery and real people without consent. Character appearance prompts must describe adults.
+## Images
+- **Image prompt** setting: **Review in editor** (default) or **Quick** (no editor).
+- In the editor, the **Scene** box is filled from the chat. Scene chips and Face chips add to it and rebuild the prompt on the phone, with no extra AI call. **Build prompt from this** asks the AI again. The final prompt is read-only. Tap **✎ edit prompt** to write it yourself.
+- Nothing is generated until you tap **Generate**.
 
-## Use
-Settings → paste your keys → Save. Characters → tap one to start a chat. Each message has buttons for 🖼 scene image, ✎ edit, 🗑 delete, ↻ regenerate (creates swipes ‹ ›), and ⋯ continue. Generated images have a 🎬 Animate button that makes a video.
-Import SillyTavern V1/V2/V3 cards as .json or .png. Back up or restore everything under Settings → Data.
+## Backups
+Settings → Data → Export all. API keys are left out of the export unless you tick "Include API keys". When you import a backup without keys, the keys already on the phone are kept.
 
-## Hosting
-Netlify Drop: open https://app.netlify.com/drop and drag the folder in (free account). GitHub Pages and Cloudflare Pages also work. On your Pixel, open the https URL in Chrome → ⋮ → Add to Home screen / Install app.
+## Tests
+Serve the app folder on `localhost:8787` (for example `python3 -m http.server 8787`). Install `puppeteer-core` and Google Chrome, then run `bash tests/run-all.sh`. It builds the single file, checks syntax, and runs every test against both `index.html` and `rp-studio-single.html`. `tests/golden` (t29) compares image prompts byte for byte against saved fixtures.
+
+## Deploy
+GitHub Pages: copy the app files into the Pages repo, bump `CACHE` in `sw.js` (e.g. `rpstudio-v31`), commit and push. Then check that `https://<user>.github.io/<repo>/sw.js` shows the new version. On the Pixel, open the URL in Chrome → ⋮ → Install app. Reopen the app once to pick up the update.

@@ -1,0 +1,25 @@
+const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,x??'')}else console.log('ok',n)};
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();await pg.setViewport({width:412,height:915,isMobile:true,hasTouch:true});const errs=[];pg.on("console",m=>console.log("C",m.text()));pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({sceneN:'2',imgProvider:'runware',runPreset:'cyber',runModel:'civitai:443821@1838857'}))});await pg.reload();await w(500);
+const dbgS=await pg.evaluate(()=>[S.imgProvider,S.runPreset,S.runModel,weightable()]);console.log('S',dbgS);const r=await pg.evaluate(async()=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.defStr=S.sceneStrength==='high';o.migN=S.sceneN==='4';
+const c={id:'cy',name:'Mara',appearance:'adult woman, long red hair, blue eyes, curvy build',imgTags:'adult woman, long red hair, blue eyes, curvy build, red dress, leather jacket'};
+curChat={id:'cz',charId:'cy',messages:[{role:'user',text:'We go inside.'},{role:'assistant',text:'*Mara steps into the candlelit bedroom, sits on the bed, completely naked now, and smiles.*'}]};
+// keyword fallback, no LLM key
+Object.assign(S,{imgProvider:'runware',runPreset:'cyber',runModel:'civitai:443821@1838857'});S.apiKey='';console.log('IN',S.imgProvider,S.runModel,weightable(),wt('x',1.3),S.sceneStrength);const p1=await scenePrompt(c,1);o.p1=p1;console.log('AFTER',S.imgProvider,S.runModel,weightable(),S.sceneStrength,p1);const idx=t=>p1.indexOf(t);
+o.order=p1.startsWith('1girl, solo, ')&&idx('sitting')<idx('nude')&&idx('nude')<idx('candlelight')&&idx('red hair')<idx('sitting');
+o.weighted=/\(sitting:1\.3\)/.test(p1)&&/\(completely nude:1\.3\)/.test(p1);o.noCloth=!/dress|jacket/.test(p1);
+S.negPrompt=RW_PRESETS.cyber.negPrompt;S.imgExclude='';const ng=buildNeg('score_9, '+p1);o.negNude=/clothes/.test(ng)&&/mosaic censoring/.test(ng)&&/child/.test(ng)&&ng.split(',').length<=40;const ng2=buildNeg('1girl, solo, sitting, red dress');o.negClothed=!/mosaic/.test(ng2)&&/loli/.test(ng2);o.cyberDefaults=RW_PRESETS.cyber.imgSteps===35&&RW_PRESETS.cyber.imgCFG===5&&/rating_explicit, source_realistic/.test(RW_PRESETS.cyber.imgPrefix)&&RW_PRESETS.illus.imgCFG===5.5&&/very aesthetic, absurdres, explicit/.test(RW_PRESETS.illus.imgPrefix);o.oneFrame=(p1.match(/close-up|full body|cowboy shot|from above/g)||[]).length<=1;o.summary=/nude/.test(sceneSummary(lastScene))&&/sitting/.test(sceneSummary(lastScene));
+// FLUX plain
+S.runPreset='flux';S.runModel='runware:101@1';o.flux=!/:1\.\d\)/.test(await scenePrompt(c,1));
+// low strength: no weights, full appearance; clothing still overridden by nude scene
+S.runPreset='cyber';S.runModel='civitai:443821@1838857';S.sceneStrength='low';const pl=await scenePrompt(c,1);o.low=!/:1\.\d\)/.test(pl)&&/curvy build/.test(pl)&&!/dress/.test(pl);
+S.sceneStrength='normal';o.normal=/:1\.15\)/.test(await scenePrompt(c,1));S.sceneStrength='high';
+// LLM path: latest weighted, prompt instructs latest first
+S.apiKey='k';const llm=[];window.streamChat=async function*(m){llm.push(m);yield 'standing, from above, kitchen, wearing apron, laughing, morning light'};
+const p2=await scenePrompt(c,1);o.llmLatest=/LATEST \(most important\)/.test(llm[0][1].content)&&/RIGHT NOW/.test(llm[0][0].content);o.p2=p2;o.kwMerged=/completely nude/.test(p2)&&!/apron/.test(p2)&&/from above/.test(p2);curChat.messages[1].text='*Mara pulls you close and kisses you on the couch.*';S.apiKey='';const p3=await scenePrompt(c,1);o.two=p3.startsWith('1girl, 1boy, hetero, faceless male, ');o.p3=p3;curChat.messages[1].text='*Mara steps into the candlelit bedroom, sits on the bed, completely naked now, and smiles.*';
+// editor shows editable Scene line and rebuilds
+S.apiKey='';await scenePrompt(c,1);const pr=editPrompt('Image prompt','','x','Generate',lastScene,{c,i:1,auto:'x',builtFor:null});await sl(200);const sc=document.querySelector('#pe_dir');o.sceneField=!document.querySelector('#pe_scene');
+sc.value='kneeling, beach, bikini, sunset';sc.dispatchEvent(new Event('input'));document.querySelector('[data-ex=smug]').click();await sl(150);const tv=document.querySelector('#pet').value;o.rebuild=/^1girl, solo, /.test(tv)&&/kneeling/.test(tv)&&/sunset/.test(tv)&&/smirk/.test(tv)&&!/nude/.test(tv);o.tv=tv;o.ow=document.documentElement.scrollWidth<=innerWidth+1;document.querySelector('#peok').click();o.ret=(await pr)===tv;
+nav('settings');await sl(200);o.ui=!!document.querySelector('#s_sceneStrength');return o});
+console.log(JSON.stringify({p1:r.p1,p2:r.p2,tv:r.tv}));for(const k in r)if(!['p1','p2','tv'].includes(k))ok(k,r[k]);ok('no errs',!errs.length,errs);await ctx.close()}console.log(F?'FAILURES '+F:'ALL PASS');await b.close()})();
