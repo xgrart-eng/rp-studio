@@ -1,0 +1,7 @@
+const p=require('puppeteer-core');let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,JSON.stringify(x??'').slice(0,400))}else console.log('ok',n)};
+const CASES=[[{skipEditor:true},'quick'],[{skipEditor:true,imgStyle:'manual'},'review'],[{skipEditor:false,sceneFirst:false},'review'],[{imgStyle:'detailed'},'review'],[{},'review'],[{skipEditor:true,sceneFirst:false,imgStyle:'simple'},'quick'],[{imgFlow:'quick',flowMig29:true,skipEditor:false},'quick']];
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html'])for(const[old,exp]of CASES){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();await pg.goto(url);await pg.evaluate(o=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({apiKey:'K1',runKey:'RK',...o}))},old);await pg.reload();await new Promise(r=>setTimeout(r,500));
+ const r=await pg.evaluate(()=>JSON.parse(localStorage.getItem('rp_settings')));await pg.reload();await new Promise(r=>setTimeout(r,400));const r2=await pg.evaluate(()=>JSON.parse(localStorage.getItem('rp_settings')));
+ ok(JSON.stringify(old)+' -> '+exp,r.imgFlow===exp&&r.flowMig29&&!('skipEditor' in r)&&!('imgStyle' in r)&&!('sceneFirst' in r)&&r.apiKey==='K1'&&r.runKey==='RK',r);ok('idempotent',JSON.stringify(r)===JSON.stringify(r2));await ctx.close()}
+await b.close();console.log(F?F+' FAILED':'ALL PASS')})();
