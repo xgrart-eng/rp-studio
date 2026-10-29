@@ -1,0 +1,40 @@
+const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let fail=0;const ck=(n,c,x)=>{console.log(c?'OK  ':'FAIL',n,c?'':JSON.stringify(x));if(!c)fail++};
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){console.log('==',url);
+const pg=await (await b.createBrowserContext()).newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));const dialogs=[];pg.on('dialog',d=>{dialogs.push(d.message());d.accept()});
+await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({imgProvider:'runware',runKey:'fake',runPreset:'cyber',runModel:'civitai:443821@2727742'}))});await pg.reload();await w(300);
+const r=await pg.evaluate(async()=>{const o={};o.migrated=[S.runPreset,S.runModel];const sl=ms=>new Promise(z=>setTimeout(z,ms));const sent=[];let mode='docs';
+ const mk=(i,arch,name,tags=[])=>({name,air:`civitai:${1000+i}@${2000+i}`,tags,category:'checkpoint',architecture:arch,heroImage:null,private:false,version:'v1',defaultSteps:25,defaultCFG:7,defaultWidth:1024,defaultHeight:1024,defaultScheduler:'Default'});
+ window.fetch=async(u,op)=>{const t=JSON.parse(op.body)[0];sent.push(t);let body;
+  if(t.taskType==='modelSearch'){if(mode==='docs'){const res=Array.from({length:20},(_,i)=>mk(i+t.offset,i%2?'pony':'sdxl','Model '+(i+t.offset)));res[3]={...res[3],name:'Loli Mix'};res[5]={...res[5],tags:['shota']};body={data:[{taskType:'modelSearch',taskUUID:t.taskUUID,totalResults:45,results:res}]}}
+   else if(mode==='odd')body={data:[{taskType:'modelSearch',payload:{models:[{AIR:'civitai:9@9',title:'Odd Shape Flux',arch:'flux1d'}]}}]};
+   else if(mode==='none')body={data:[{taskType:'modelSearch',items:[{foo:1}]}]};
+   else if(mode==='check')body={data:[{results:[]}]};
+   else if(mode==='err')return new Response(JSON.stringify({errors:[{code:'invalidApiKey',message:'Invalid API key',parameter:'apiKey'}]}),{status:401});}
+  else body={errors:[{code:'invalidModel',message:'Model must be a string value representing a valid AIR identifier',parameter:'model'}]};
+  return new Response(JSON.stringify(body),{status:body.errors?400:200})};
+ nav('settings');await sl(200);o.presetSel=document.querySelector('#s_runPreset').value;o.hasFind=!!document.querySelector('#rwfind');
+ document.querySelector('#rwfind').click();await sl(100);document.querySelector('#mba').value='pony';document.querySelector('.chip[data-q=pony]').click();await sl(300);
+ o.req=sent.at(-1);o.rows=document.querySelectorAll('#mbl .mrow').length;o.status=document.querySelector('#mbst').textContent;o.moreVisible=!document.querySelector('#mbmore').hidden;
+ document.querySelector('#mbmore').click();await sl(300);o.rows2=document.querySelectorAll('#mbl .mrow').length;o.off2=sent.at(-1).offset;
+ o.names=[...document.querySelectorAll('#mbl b')].map(b=>b.textContent).filter(n=>/loli/i.test(n));
+ const ponyRow=[...document.querySelectorAll('#mbl .mrow')].find(r=>/pony/.test(r.textContent));ponyRow.querySelector('[data-use]').click();await sl(300);
+ o.applied={m:S.runModel,cs:S.clipSkip,cfg:S.imgCFG,pre:S.imgPrefix,w:S.imgW,h:S.imgH,st:S.imgSteps};o.sheetGone=!document.querySelector('#mbrowse');
+ mode='odd';openModelBrowser();document.querySelector('#mbgo').click();await sl(300);o.odd=[...document.querySelectorAll('#mbrowse .mrow')].map(r=>r.textContent);document.querySelector('#mbrowse .mrow [data-use]').click();await sl(200);o.oddApplied=[S.runModel,S.imgCFG,S.clipSkip];
+ mode='none';openModelBrowser();document.querySelector('#mbgo').click();await sl(300);o.rawShown=document.querySelector('#mbraw').open&&!document.querySelector('#mbraw').hidden;o.rawTxt=document.querySelector('#mbrawt').textContent.slice(0,60);document.querySelector('#mbx').click();
+ mode='err';openModelBrowser();document.querySelector('#mbgo').click();await sl(300);o.errToast=document.querySelector('#toast').className+' '+document.querySelector('#toast').textContent.slice(0,40);document.querySelector('#mbx').click();
+ mode='check';nav('settings');await sl(200);document.querySelector('[data-sug=pony]').click();await sl(600);o.verifyReq=sent.at(-1);o.browserOpened=!!document.querySelector('#mbrowse');document.querySelector('#mbrowse')?.remove();
+ Object.assign(S,{runModel:'civitai:257749@290640'});try{await genImage('x')}catch(e){o.genErr=/invalidModel/.test(e.message)}await sl(900);o.offerReq=sent.at(-1).taskType+' '+sent.at(-1).search;
+ return o});
+console.log(JSON.stringify(r).slice(0,1500));
+ck('migrated off removed cyber preset to flux',r.migrated[0]==='flux'&&r.migrated[1]==='runware:101@1',r.migrated);
+ck('preset dropdown shows FLUX',r.presetSel==='flux',r.presetSel);ck('find button',r.hasFind);
+ck('modelSearch request shape',r.req.taskType==='modelSearch'&&r.req.search==='pony'&&r.req.architecture==='pony'&&r.req.category==='checkpoint'&&r.req.limit===20&&r.req.offset===0,r.req);
+ck('blocked rows filtered (18 of 20)',r.rows===18&&/2 hidden/.test(r.status),[r.rows,r.status]);ck('load more',r.moreVisible&&r.off2===20&&r.rows2>r.rows,[r.off2,r.rows2]);ck('no loli names',r.names.length===0,r.names);
+ck('Use applies pony defaults',/^civitai:/.test(r.applied.m)&&r.applied.cs==2&&r.applied.cfg==7&&/score_9/.test(r.applied.pre)&&r.applied.w==832&&r.applied.h==1216&&r.sheetGone,r.applied);
+ck('odd shape parsed',r.odd.length===1&&/Odd Shape Flux/.test(r.odd[0]),r.odd);ck('flux defaults',r.oddApplied[0]==='civitai:9@9'&&r.oddApplied[1]==3.5&&r.oddApplied[2]==='',r.oddApplied);
+ck('raw shown when nothing parsed',r.rawShown,r.rawTxt);ck('full error shown',/^err Runware HTTP 401/.test(r.errToast),r.errToast);
+ck('preset verify runs modelSearch for AIR',r.verifyReq.taskType==='modelSearch'&&r.verifyReq.search==='civitai:257749@290640'&&r.browserOpened,[r.verifyReq,r.browserOpened]);
+ck('invalidModel offers check',r.genErr&&r.offerReq==='modelSearch civitai:257749@290640',r.offerReq);
+ck('no page errors',!errs.length,errs);console.log('dialogs:',dialogs.length)}
+await b.close();console.log(fail?'FAILURES '+fail:'ALL PASS')})();
