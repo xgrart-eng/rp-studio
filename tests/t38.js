@@ -1,0 +1,23 @@
+const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,JSON.stringify(x??'').slice(0,600))}else console.log('ok',n)};
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({apiKey:'FAKE',baseUrl:'https://api.x.ai/v1',model:'grok-main'}))});await pg.reload();await w(700);
+const run=async(msgs,o)=>pg.evaluate(async(msgs,o)=>{window._b=[];window.fetch=async(u,x)=>{_b.push(JSON.parse(x.body));return new Response('data: {"choices":[{"delta":{"content":"ok"}}]}\n\ndata: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}})};
+ const c={id:'ch',name:'Hazel',description:'d',personality:'p',scenario:'s',hooks:'the mystery diary'};await put('chars',c);curChat={id:'c38'+Math.random(),charId:'ch',messages:msgs.map((t,i)=>({role:i%2?'user':'assistant',text:t,id:'m'+i}))};view='chat';await render();await generate(c,o||{});await new Promise(z=>setTimeout(z,300));return _b[0].messages},msgs,o);
+const same1='She turns another page of her book, eyes on the words, ignoring you. "Mm," she says quietly, still reading.',same2='She turns another page of the book, eyes fixed on the words, still ignoring you. "Mm," she murmurs, reading on.';
+let m=await run(['hi','come here',same1,'hey',same2,'talk to me']);const sys=m[0].content;
+ok('agency has engagement rules',/boundary, a refusal or an awkward beat/.test(sys)&&/body language and inner reaction/.test(sys)&&/Never loop/.test(sys)&&/reading, cleaning, typing/.test(sys)&&/banter or teasing/.test(sys)&&/stays as guarded/.test(sys),sys.slice(-1500));
+ok('permission ban kept',/either\/or/.test(sys)&&/Never jump straight to sex/.test(sys));
+ok('hooks in prompt',/Conversation hooks[^\n]*mystery diary/.test(sys));
+ok('late reminder engaged',/never loop/i.test(m.at(-1).content)&&/either\/or/.test(m.at(-1).content),m.at(-1));
+ok('stall hint fires on repeats',m.some(x=>x.role==='system'&&/Break the loop/.test(x.content)),m.slice(-3));
+m=await run(['hi','come here','She snaps the book shut. "Bold. Wrong room for it, but bold."','sorry','"Sorry is a start." She studies you, curious. "Do you try that on every librarian, or am I special?" Her phone buzzes; the board again.','talk to me']);
+ok('no stall hint on varied',!m.some(x=>/Break the loop/.test(x.content)),m.slice(-3));
+m=await run(['hi','come here','She snaps the book shut. "Bold."','sorry'],{nudge:true});ok('nudge adds loop hint',m.some(x=>/takes the initiative/.test(x.content))&&m.some(x=>/Break the loop/.test(x.content)),m.slice(-3));
+await pg.evaluate(()=>{S.stallBreaker=false});m=await run(['hi','x',same1,'y',same2,'z']);ok('toggle off',!m.some(x=>/Break the loop/.test(x.content)));
+await pg.evaluate(()=>{S.stallBreaker=true;view='settings';render()});await w(400);ok('settings toggle',await pg.evaluate(()=>!!document.querySelector('#s_stallBreaker')?.checked));
+const r=await pg.evaluate(()=>PREMADE.filter(x=>['pm-hazel','pm-claire','pm-jess','pm-yuki','pm-elena','pm-sylra'].includes(x.id)).map(x=>({id:x.id,age:x.age,h:x.hooks||''})));
+ok('guarded premades have hooks',r.length===6&&r.every(x=>x.h.length>80&&x.age>=21),r);const hz=r.find(x=>x.id==='pm-hazel').h;ok('hazel hooks rich',/diary/.test(hz)&&/worry/.test(hz)&&/Quirk/.test(hz)&&/too forward/.test(hz)&&/curiosity/.test(hz),hz);
+const u=await pg.evaluate(async()=>{const p=PREMADE.find(x=>x.id==='pm-hazel');await put('chars',{...pmChar(p),hooks:'',personality:'old'});await updPm('pm-hazel');const c=(await all('chars')).find(x=>x.premadeId==='pm-hazel');return c.hooks});ok('update carries hooks',/diary/.test(u||''));
+ok('no page errors',!errs.length,errs);await ctx.close()}
+await b.close();console.log(F?F+' FAILED':'ALL PASS')})();
