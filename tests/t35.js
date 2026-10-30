@@ -2,12 +2,12 @@ const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let
 (async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();await pg.setViewport({width:412,height:915,isMobile:true,hasTouch:true});const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.goto(url);await pg.evaluate(()=>{localStorage.clear();localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({imgProvider:'fal',falKey:'FK',runKey:'RK',apiKey:'AK',imgModel:'fal-ai/flux-lora',favModels:[{id:'a',name:'FalOne',provider:'fal',model:'fal-ai/flux-lora',preset:'',params:{}},{id:'b',name:'RwOne',provider:'runware',model:'civitai:1@2',preset:'',params:{}}]}))});await pg.reload();await w(500);
-const r=await pg.evaluate(async()=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.prov=S.imgProvider==='runware';o.keys=S.falKey==='FK'&&S.runKey==='RK'&&S.apiKey==='AK';o.favs=S.favModels.length===2;
+const r=await pg.evaluate(async()=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.prov=S.imgProvider==='runware';o.keys=S.falKey==='FK'&&S.runKey==='RK'&&S.apiKey==='AK';o.favs=S.favModels.length===9&&S.favModels.filter(f=>/^fmv33_/.test(f.id)).length===7;
 const raw=localStorage.getItem('rp_settings');return{o,raw}});
 await pg.reload();await w(400);
-const r2=await pg.evaluate(async(raw)=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.idem=localStorage.getItem('rp_settings')===raw&&S.favModels.length===2;
+const r2=await pg.evaluate(async(raw)=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.idem=localStorage.getItem('rp_settings')===raw&&S.favModels.length===9;
 nav('settings');await sl(200);document.querySelector('[data-sec=images]').open=true;o.noProv=!document.querySelector('#s_imgProvider')&&!document.querySelector('#s_novKey')&&!document.querySelector('#s_repKey')&&!document.querySelector('#s_customImgUrl')&&!document.querySelector('#s_imgModel');
-o.oneList=document.querySelectorAll('#fmlist [data-fm]').length===2&&document.querySelectorAll('#fmlist [data-sug]').length>=5&&!!document.querySelector('.fmbox #rwfind');
+o.oneList=document.querySelectorAll('#fmlist [data-fm]').length===9&&document.querySelectorAll('#fmlist [data-sug]').length>=5&&!!document.querySelector('.fmbox #rwfind');
 o.vidKey=document.querySelector('[data-sec=video] #s_falKey')?.value==='FK';
 window.confirm=()=>false;document.querySelector('[data-fm=a]').click();await sl(200);o.falFavNoSwitch=S.imgProvider==='runware';
 const sent=[];window.fetch=async(u,i)=>{sent.push(String(u));return new Response(JSON.stringify({data:[{taskType:'imageInference',imageURL:'data:image/png;base64,iVBORw0KGgo='}]}),{status:200})};window.saveMediaFromUrl=async()=>'m';

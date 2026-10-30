@@ -9,6 +9,6 @@ const a=await pg.evaluate(()=>({S:JSON.parse(JSON.stringify(S)),raw:localStorage
 await pg.reload();await w(400);const raw2=await pg.evaluate(()=>localStorage.getItem('rp_settings'));await pg.reload();await w(400);const raw3=await pg.evaluate(()=>localStorage.getItem('rp_settings'));
 const S=a.S,n=fx.name+' '+url.slice(-12)+' ';
 ok(n+'flow',S.imgFlow===fx.flow,S.imgFlow);ok(n+'old flags gone',!('skipEditor' in S)&&!('sceneFirst' in S)&&!('imgStyle' in S));ok(n+'runware',S.imgProvider==='runware');
-ok(n+'keys kept',['falKey','runKey','apiKey','novKey'].every(k=>!fx.s[k]||S[k]===fx.s[k]),S);ok(n+'favs kept',JSON.stringify((fx.s.favModels||[]).map(f=>f.id))===JSON.stringify(S.favModels.map(f=>f.id))&&S.favModels.every((f,i)=>f.model===fx.s.favModels[i].model));
+ok(n+'keys kept',['falKey','runKey','apiKey','novKey'].every(k=>!fx.s[k]||S[k]===fx.s[k]),S);ok(n+'favs kept',JSON.stringify((fx.s.favModels||[]).map(f=>f.id))===JSON.stringify(S.favModels.slice(0,(fx.s.favModels||[]).length).map(f=>f.id))&&S.favModels.slice((fx.s.favModels||[]).length).every(f=>/^fmv33_/.test(f.id))&&(fx.s.favModels||[]).every((f,i)=>S.favModels[i].model===f.model));
 ok(n+'idempotent',a.raw===raw2&&raw2===raw3);ok(n+'no errs',!errs.length,errs);await ctx.close()}
 console.log(F?'FAILURES '+F:'ALL PASS');await b.close()})();

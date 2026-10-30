@@ -17,7 +17,7 @@ const last=S.favModels[2].id;document.querySelector(`[data-fmrm="${last}"]`).cli
 await pg.reload();await w(500);
 const r2=await pg.evaluate(async()=>{const sl=t=>new Promise(z=>setTimeout(z,t));const o={};o.persist=S.favModels.length===2&&S.favModels[0].name==='Nick';
 const pr=editPrompt('Image prompt','','a scene','Generate');await sl(300);const chips=[...document.querySelectorAll('#pefav [data-fm]')];o.peChips=chips.length===2;o.peow=document.documentElement.scrollWidth<=innerWidth+1;
-chips[1].click();await sl(200);o.peSwitch=S.runModel==='civitai:140272@1617798'&&document.querySelector('#pesum').textContent.includes('Illustrious')&&document.querySelector('#pefav .fmchip.on')?.dataset.fmid===S.favModels[1].id;
+chips[1].click();await sl(200);o.peSwitch=S.runModel==='civitai:140272@1617798'&&document.querySelector('#pesum').textContent.includes('Hassaku')&&document.querySelector('#pefav .fmchip.on')?.dataset.fmid===S.favModels[1].id;
 document.querySelector('#peok').click();o.peVal=await pr;o.used=S.runModel==='civitai:140272@1617798';
 let dump;window.download=(n,obj)=>{dump=JSON.parse(JSON.stringify(obj))};await exportAll();await sl(200);o.exp=dump.settings.favModels.length===2;
 S.favModels=[];saveS();await importAll(new File([JSON.stringify(dump)],'b.json'));await sl(300);o.imp=S.favModels.length===2;
