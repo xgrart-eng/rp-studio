@@ -17,11 +17,7 @@ await pg.evaluate(async()=>{S.lateReminder=false;_bodies=[];await generate({id:'
 ok('nudge in sheet code',await pg.evaluate(()=>typeof NUDGE==='string'));
 // fav removal in image prompt editor
 await pg.evaluate(()=>{editPrompt('Image prompt','',"1girl",'Generate')});await w(400);
-r=await pg.evaluate(()=>({n:document.querySelectorAll('#pefav [data-fmrm]').length}));ok('x on fav chips',r.n===2,r);
-await pg.click('#pefav [data-fmrm=fmA]');await w(300);
-r=await pg.evaluate(()=>({chips:[...document.querySelectorAll('#pefav .fmchip')].map(x=>x.dataset.fmid),s:S.favModels.map(f=>f.id),ls:JSON.parse(localStorage.getItem('rp_settings')).favModels.map(f=>f.id),open:!!document.querySelector('#pedit')}));
-ok('fav removed',r.chips.join()==='fmB'&&r.s.join()==='fmB'&&r.ls.join()==='fmB'&&r.open,r);
-await pg.click('#pefav [data-fmrm=fmB]');await w(300);r=await pg.evaluate(()=>({s:S.favModels.length,pefav:!!document.querySelector('#pefav')}));ok('last fav removed',r.s===0&&!r.pefav,r);
+r=await pg.evaluate(()=>({n:document.querySelectorAll('#pefav [data-fmrm]').length}));ok('v37: fav chips selection-only (no x)',r.n===0,r);
 await pg.evaluate(()=>document.querySelector('#pecn')?.click());
 // update copy
 r=await pg.evaluate(async()=>{const p=PREMADE.find(x=>x.id==='pm-maddie');await put('chars',{...pmChar(p),personality:'old shy',avatarId:'av1',fav:true});const n=await updPm('pm-maddie');const c=(await all('chars')).find(x=>x.premadeId==='pm-maddie');return{n,per:c.personality,av:c.avatarId,fav:c.fav,leads:c.leads}});ok('update my copy',r.n===1&&/first move/.test(r.per)&&r.av==='av1'&&r.fav&&r.leads,r);

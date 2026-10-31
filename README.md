@@ -14,7 +14,7 @@ Cloud-API roleplay chat with image and video generation, for adults only (every 
 
 ## Images
 - **Image prompt** setting: **Review in editor** (default) or **Quick** (no editor).
-- In the editor, the **Scene** box is filled from the chat. Scene chips and Face chips add to it and rebuild the prompt on the phone, with no extra AI call. **Build prompt from this** asks the AI again. The final prompt is read-only. Tap **✎ edit prompt** to write it yourself.
+- In the editor, the **Scene** box is filled from the chat. Scene chips and Face chips add to it and rebuild the prompt on the phone, with no extra AI call. **Build prompt from this** asks the AI again; it also runs on its own about 1 second after you stop typing in Scene. **Fill scene from chat** writes the scene from the chat. The Model row opens your models (tap to switch; manage, rename and remove them in Settings > Manage models). The final prompt is read-only. Tap **✎ edit prompt** to write it yourself.
 - Nothing is generated until you tap **Generate**.
 
 ## Backups

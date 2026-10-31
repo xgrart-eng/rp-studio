@@ -133,3 +133,10 @@ textarea,input{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 .tools .iconly{margin-left:auto;min-width:48px}.linkbtn{background:none;border:0;color:var(--mut);text-decoration:underline;padding:6px 0;min-height:auto}
 .msg .txt{-webkit-user-select:text;user-select:text}
 #gate:not([hidden])~*{visibility:hidden}
+
+.chiprow{flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch}.chiprow .chip{flex:0 0 auto}.facelbl{flex:0 0 auto;font-size:13px;align-self:center;margin:0 2px 0 8px}
+.clamp3{max-height:4.8em!important;overflow:hidden}
+.modelrow{width:100%;text-align:left;min-height:48px;margin-top:8px}
+.fam{font-size:11px;background:#2c2c3a;border-radius:6px;padding:1px 5px;margin-left:4px;color:var(--mut)}
+.fmchip.on{background:#4c2a85;border-color:#a78bfa}.fmchip.on .fmsel{color:#fff}
+.stale{color:#fbbf24}
