@@ -9,7 +9,7 @@ r=await pg.evaluate(()=>S.favModels.find(f=>f.model==='civitai:833294@1190596'))
 r=await pg.evaluate(()=>S.favModels.filter(f=>/pony|autism/i.test(f.name)).every(f=>f.params.imgCFG===6&&f.params.clipSkip===2&&/^score_9/.test(f.params.imgPrefix)));ok('pony params',r);
 r=await pg.evaluate(()=>S.favModels.filter(f=>/wai|hassaku|nova|obsession/i.test(f.name)).every(f=>f.params.imgCFG===5.5&&f.params.clipSkip===2&&f.params.imgSched==='EulerAncestralDiscreteScheduler'&&/amazing quality/.test(f.params.imgPrefix)&&/loli/.test(f.params.negPrompt)));ok('illustrious params',r);
 r=await pg.evaluate(()=>['140272','376130','1318945','833294','827184'].map(i=>modelArch('civitai:'+i+'@1')).concat(['439889','288584'].map(i=>modelArch('civitai:'+i+'@1'))));ok('arch detect',r.join()==='illustrious,illustrious,illustrious,illustrious,illustrious,pony,pony',r);
-ok('hassaku preset relabeled',await pg.evaluate(()=>/Hassaku XL v2\.2/.test(RW_PRESETS.illus.label)&&RW_PRESETS.wai.runModel==='civitai:827184@2514310'));
+ok('hassaku preset relabeled',await pg.evaluate(()=>/Hassaku XL.*v2\.1fix/.test(RW_PRESETS.illus.label)&&RW_PRESETS.wai.runModel==='civitai:827184@2514310'));
 // remove sticks
 await pg.evaluate(()=>{rmFM(S.favModels.find(f=>/Nova/.test(f.name)).id)});await pg.reload();await w(800);
 r=await pg.evaluate(()=>S.favModels.map(f=>f.model));ok('removal sticks across reload',r.length===6&&!r.includes('civitai:376130@2940478'),r);

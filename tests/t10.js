@@ -6,7 +6,7 @@ await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');lo
 const r=await pg.evaluate(async()=>{const o={};o.migrated=[S.runPreset,S.runModel];const sl=ms=>new Promise(z=>setTimeout(z,ms));const sent=[];let mode='docs';
  const mk=(i,arch,name,tags=[])=>({name,air:`civitai:${1000+i}@${2000+i}`,tags,category:'checkpoint',architecture:arch,heroImage:null,private:false,version:'v1',defaultSteps:25,defaultCFG:7,defaultWidth:1024,defaultHeight:1024,defaultScheduler:'Default'});
  window.fetch=async(u,op)=>{const t=JSON.parse(op.body)[0];sent.push(t);let body;
-  if(t.taskType==='modelSearch'){if(mode==='docs'){const res=Array.from({length:20},(_,i)=>mk(i+t.offset,i%2?'pony':'sdxl','Model '+(i+t.offset)));res[3]={...res[3],name:'Loli Mix'};res[5]={...res[5],tags:['shota']};body={data:[{taskType:'modelSearch',taskUUID:t.taskUUID,totalResults:45,results:res}]}}
+  if(t.taskType==='modelSearch'){if(mode==='docs'){const res=Array.from({length:50},(_,i)=>mk(i+t.offset,i%2?'pony':'sdxl','Model '+(i+t.offset)));res[3]={...res[3],name:'Loli Mix'};res[5]={...res[5],tags:['shota']};body={data:[{taskType:'modelSearch',taskUUID:t.taskUUID,totalResults:120,results:res}]}}
    else if(mode==='odd')body={data:[{taskType:'modelSearch',payload:{models:[{AIR:'civitai:9@9',title:'Odd Shape Flux',arch:'flux1d'}]}}]};
    else if(mode==='none')body={data:[{taskType:'modelSearch',items:[{foo:1}]}]};
    else if(mode==='check')body={data:[{results:[]}]};
@@ -29,8 +29,8 @@ const r=await pg.evaluate(async()=>{const o={};o.migrated=[S.runPreset,S.runMode
 console.log(JSON.stringify(r).slice(0,1500));
 ck('migrated off removed cyber preset to flux',r.migrated[0]==='flux'&&r.migrated[1]==='runware:101@1',r.migrated);
 ck('preset dropdown shows FLUX',r.presetSel==='flux',r.presetSel);ck('find button',r.hasFind);
-ck('modelSearch request shape',r.req.taskType==='modelSearch'&&r.req.search==='pony'&&r.req.architecture==='pony'&&r.req.category==='checkpoint'&&r.req.limit===20&&r.req.offset===0,r.req);
-ck('blocked rows filtered (18 of 20)',r.rows===18&&/2 hidden/.test(r.status),[r.rows,r.status]);ck('load more',r.moreVisible&&r.off2===20&&r.rows2>r.rows,[r.off2,r.rows2]);ck('no loli names',r.names.length===0,r.names);
+ck('modelSearch request shape',r.req.taskType==='modelSearch'&&r.req.search==='pony'&&r.req.architecture==='pony'&&r.req.category==='checkpoint'&&r.req.limit===50&&r.req.visibility==='public'&&r.req.sort==='popularity'&&r.req.offset===0,r.req);
+ck('blocked rows filtered (48 of 50)',r.rows===48&&/2 hidden/.test(r.status),[r.rows,r.status]);ck('load more',r.moreVisible&&r.off2===50&&r.rows2>r.rows,[r.off2,r.rows2]);ck('no loli names',r.names.length===0,r.names);
 ck('Use applies pony defaults',/^civitai:/.test(r.applied.m)&&r.applied.cs==2&&r.applied.cfg==7&&/score_9/.test(r.applied.pre)&&r.applied.w==832&&r.applied.h==1216&&r.sheetGone,r.applied);
 ck('odd shape parsed',r.odd.length===1&&/Odd Shape Flux/.test(r.odd[0]),r.odd);ck('flux defaults',r.oddApplied[0]==='civitai:9@9'&&r.oddApplied[1]==3.5&&r.oddApplied[2]==='',r.oddApplied);
 ck('raw shown when nothing parsed',r.rawShown,r.rawTxt);ck('full error shown',/^err Runware HTTP 401/.test(r.errToast),r.errToast);
