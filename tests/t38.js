@@ -17,7 +17,7 @@ m=await run(['hi','come here','She snaps the book shut. "Bold."','sorry'],{nudge
 await pg.evaluate(()=>{S.stallBreaker=false});m=await run(['hi','x',same1,'y',same2,'z']);ok('toggle off',!m.some(x=>/Break the loop/.test(x.content)));
 await pg.evaluate(()=>{S.stallBreaker=true;view='settings';render()});await w(400);ok('settings toggle',await pg.evaluate(()=>!!document.querySelector('#s_stallBreaker')?.checked));
 const r=await pg.evaluate(()=>PREMADE.filter(x=>['pm-hazel','pm-claire','pm-jess','pm-yuki','pm-elena','pm-sylra'].includes(x.id)).map(x=>({id:x.id,age:x.age,h:x.hooks||''})));
-ok('guarded premades have hooks',r.length===6&&r.every(x=>x.h.length>80&&x.age>=21),r);const hz=r.find(x=>x.id==='pm-hazel').h;ok('hazel hooks rich',/diary/.test(hz)&&/worry/.test(hz)&&/Quirk/.test(hz)&&/too forward/.test(hz)&&/curiosity/.test(hz),hz);
+ok('guarded premades have hooks',r.length===6&&r.every(x=>x.h.length>80&&x.age>=21),r);const hz=r.find(x=>x.id==='pm-hazel').h;ok('hazel hooks rich',/[Dd]iary/.test(hz)&&/Earning her/.test(hz)&&hz.length>600,hz);
 const u=await pg.evaluate(async()=>{const p=PREMADE.find(x=>x.id==='pm-hazel');await put('chars',{...pmChar(p),hooks:'',personality:'old'});await updPm('pm-hazel');const c=(await all('chars')).find(x=>x.premadeId==='pm-hazel');return c.hooks});ok('update carries hooks',/diary/.test(u||''));
 ok('no page errors',!errs.length,errs);await ctx.close()}
 await b.close();console.log(F?F+' FAILED':'ALL PASS')})();

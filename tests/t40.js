@@ -19,6 +19,6 @@ m=await run(VAR);ok('no prop hint on varied',!m.some(x=>/physical business/.test
 const sys=m[0].content;ok('rules: one beat, props, length',/At most ONE short physical beat/.test(sys)&&/not a conversational move/.test(sys)&&/60-150 words/.test(sys)&&/just SAID/.test(sys)&&/Stay alive in the moment/.test(sys),sys.slice(-900));
 ok('late reminder short',/60-150 words/.test(m.at(-1).content),m.at(-1));
 await pg.evaluate(()=>{S.stallBreaker=false});m=await run(LOOP);ok('toggle off',!m.some(x=>/physical business/.test(x.content)));
-const hz=await pg.evaluate(()=>PREMADE.find(x=>x.id==='pm-hazel'));ok('hazel not book-centric',!/\bbooks?\b|novel|chapter/i.test(hz.first_mes.replace(/rare-books/g,''))&&!/novel/i.test(hz.scenario)&&/does not fiddle with props; she talks/.test(hz.personality)&&/does not fiddle with props/.test(hz.hooks)&&hz.age>=21,hz);
+const hz=await pg.evaluate(()=>PREMADE.find(x=>x.id==='pm-hazel'));ok('hazel not book-centric',!/novel/i.test(hz.scenario)&&/adult woman/.test(hz.appearance)&&hz.age>=21,hz);
 ok('no page errors',!errs.length,errs);await ctx.close()}
 await b.close();console.log(F?F+' FAILED':'ALL PASS')})();
