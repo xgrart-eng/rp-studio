@@ -1,0 +1,27 @@
+const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,JSON.stringify(x??'').slice(0,700))}else console.log('ok',n)};
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({apiKey:'FAKE',runKey:'FAKE',imgProvider:'runware',runModel:'civitai:827184@2883731',safetyOff:false}))});await pg.reload();await w(700);
+let r=await pg.evaluate(async()=>{window.B=[];window.fetch=async(u,o)=>{if(/runware/.test(u)){const t=JSON.parse(o.body);B.push(t[0]);return new Response(JSON.stringify({data:[{taskType:'imageInference',imageURL:'https://x/i.jpg'}]}),{status:200})}return new Response(new Blob(['x'],{type:'image/jpeg'}),{status:200})};
+const c={id:'g1',name:'Gia',description:'A 30-year-old woman.',appearance:'adult woman, 30s'};await put('chars',c);curChat={id:'cg',charId:'g1',messages:[]};
+await genImage('1girl, schoolgirl, school uniform, teen, loli, (young:1.2), 15 years old, little girl, kid, shota, underage, red dress, smiling');
+S.imgExtra='{"positivePrompt":"child, loli, red hat","negativePrompt":"blurry"}';await genImage('1girl, red dress');S.imgExtra='';
+S.rwCheckContent=true;await genImage('1girl');S.rwCheckContent=false;
+const s1=(await all('chars')).find(x=>x.id==='g1').seed;
+const d=(await all('chars')).find(x=>x.id==='g1');d.refOn=true;d.refImg='mref';await put('media',{id:'mref',type:'image',blob:new Blob(['x'],{type:'image/jpeg'})});await put('chars',d);await genImage('1girl');
+return{B,s1,mig:S.ccMig40,cc0:S.rwCheckContent,pony:archDefaults('pony').imgPrefix,ponyneg:PONY_NEG,illus:archDefaults('illustrious').imgPrefix}});
+const bad=/\b(schoolgirl|school uniform|teen|loli|young|15 years old|little girl|kid|shota|underage|child)\b/i;
+ok('banned stripped from positive',!bad.test(r.B[0].positivePrompt)&&/red dress/.test(r.B[0].positivePrompt),r.B[0].positivePrompt);
+ok('extra params cannot inject positive',!bad.test(r.B[1].positivePrompt)&&/red hat/.test(r.B[1].positivePrompt),r.B[1].positivePrompt);
+ok('negative always guarded',r.B.every(t=>['child','loli','young','underage'].every(g=>t.negativePrompt.split(', ').includes(g))),r.B.map(t=>t.negativePrompt));
+ok('checkContent off by default',!r.B[0].safety&&!r.B[1].safety&&r.mig===true&&r.cc0===false,r.B[0].safety);
+ok('checkContent when enabled',r.B[2].safety&&r.B[2].safety.checkContent===true,r.B[2]);
+ok('seed per character, stable, saved',r.B[0].seed>0&&r.B.every(t=>t.seed===r.s1),r.B.map(t=>t.seed));
+ok('ipAdapters face ref',r.B[3].ipAdapters&&r.B[3].ipAdapters[0].model==='runware:55@3'&&r.B[3].ipAdapters[0].weight===0.6&&/^data:/.test(r.B[3].ipAdapters[0].guideImages[0]),r.B[3].ipAdapters);
+ok('no ipAdapters when off',!r.B[0].ipAdapters,r.B[0]);
+ok('pony rating tag',/rating_explicit/.test(r.pony)&&/source_furry/.test(r.ponyneg),r);ok('illustrious unchanged',!/rating_|source_/.test(r.illus),r.illus);
+r=await pg.evaluate(async()=>{editId='g1';view='edit';render();await new Promise(z=>setTimeout(z,400));const a=$('#f_seedv').textContent;$('#newlook').click();const b=$('#f_seedv').textContent;$('#f_adult').checked=true;$('#sv').click();await new Promise(z=>setTimeout(z,300));return{a,b,s:(await all('chars')).find(x=>x.id==='g1').seed,ref:!!document.querySelector('#f_refOn')||true}});
+ok('New look rerolls seed',r.a!==r.b&&String(r.s)===r.b,r);
+r=await pg.evaluate(async()=>{view='settings';render();await new Promise(z=>setTimeout(z,300));return !!document.querySelector('#s_rwCheckContent')});ok('settings toggle',r);
+ok('no page errors',!errs.length,errs);await ctx.close()}
+await b.close();console.log(F?F+' FAILED':'ALL PASS');process.exit(F?1:0)})();

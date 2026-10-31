@@ -25,3 +25,4 @@ Serve the app folder on `localhost:8787` (for example `python3 -m http.server 87
 
 ## Deploy
 GitHub Pages: copy the app files into the Pages repo, bump `CACHE` in `sw.js` (e.g. `rpstudio-v31`), commit and push. Then check that `https://<user>.github.io/<repo>/sw.js` shows the new version. On the Pixel, open the URL in Chrome → ⋮ → Install app. Reopen the app once to pick up the update.
+- v38: optional **Sample dialogue** (`mes_example`, alias `example_dialogue`/`sample_dialogue` on import) under More details; sent as a delimited `<sample_dialogue>` style-reference block only when non-empty.
