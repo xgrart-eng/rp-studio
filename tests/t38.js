@@ -10,7 +10,7 @@ ok('agency has engagement rules',/boundary, a refusal or an awkward beat/.test(s
 ok('permission ban kept',/either\/or/.test(sys)&&/Never jump straight to sex/.test(sys));
 ok('hooks in prompt',/Conversation hooks[^\n]*mystery diary/.test(sys));
 ok('late reminder engaged',/never loop/i.test(m.at(-1).content)&&/either\/or/.test(m.at(-1).content),m.at(-1));
-ok('stall hint fires on repeats',m.some(x=>x.role==='system'&&/Break the loop/.test(x.content)),m.slice(-3));
+ok('stall hint fires on repeats (narrator on: v42 fallback replaces old hint)',m.some(x=>x.role==='system'&&(/Break the loop/.test(x.content)||/resolve it in this reply/.test(x.content))),m.slice(-3));
 m=await run(['hi','come here','She snaps the book shut. "Bold. Wrong room for it, but bold."','sorry','"Sorry is a start." She studies you, curious. "Do you try that on every librarian, or am I special?" Her phone buzzes; the board again.','talk to me']);
 ok('no stall hint on varied',!m.some(x=>/Break the loop/.test(x.content)),m.slice(-3));
 m=await run(['hi','come here','She snaps the book shut. "Bold."','sorry'],{nudge:true});ok('nudge adds loop hint',m.some(x=>/takes the initiative/.test(x.content))&&m.some(x=>/Break the loop/.test(x.content)),m.slice(-3));
