@@ -1,0 +1,22 @@
+const p=require('puppeteer-core');const w=t=>new Promise(r=>setTimeout(r,t));let F=0;const ok=(n,c,x)=>{if(!c){F++;console.log('FAIL',n,JSON.stringify(x??'').slice(0,700))}else console.log('ok',n)};
+const BAD=["She reaches down to tangle her fingers with his on her back, then leans in to press a kiss to his collarbone. \"Stay.\"","Hazel smiles, guiding his hand to her hip. \"There.\""];
+const VAR=["\"Bold. Wrong room for it.\" Hazel folds her arms. \"Do you try that on every librarian?\"","She laughs and takes your hand. \"Your turn. Worst thing you ever did to a book.\""];
+const FOUNDER=["\"The founder used to meet his lover here,\" she says. \"Right where you're standing.\"","She traces the diary entry. The founder wrote about his lover's hands, and she reads it aloud to you."];
+const PRON3=/\b(?:(?:his|him)\s+(?:hand|hands|back|collarbone|gaze|eyes|chest|lap|hips?|neck|mouth|lips|skin|face|fingers)|(?:asks about|teases|challenges|studies|drags|makes|reads|shoves)\s+him|why he did|what he|about his)\b/i;
+const EXC=[/Reader, I married him/];
+(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
+await pg.goto(url);await pg.evaluate(()=>{localStorage.setItem('rp_age','ok');localStorage.setItem('rp_settings',JSON.stringify({apiKey:'FAKE',baseUrl:'https://api.x.ai/v1',model:'grok-main',rwVidModel:'lightricks:ltx@2.3'}))});await pg.reload();await w(700);
+const run=async(as)=>pg.evaluate(async(as)=>{window._b=[];window.fetch=async(u,x)=>{_b.push(JSON.parse(x.body));return new Response('data: {"choices":[{"delta":{"content":"ok"}}]}\n\ndata: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}})};
+ const c={id:'ch',name:'Hazel',description:'d',personality:'p',scenario:'s'};await put('chars',c);const ms=[];as.forEach((t,i)=>{ms.push({role:'assistant',text:t,id:'a'+i});ms.push({role:'user',text:'hm',id:'u'+i})});curChat={id:'c41'+Math.random(),charId:'ch',messages:ms};view='chat';await render();await generate(c,{});await new Promise(z=>setTimeout(z,300));return _b[0].messages},as);
+const d=a=>pg.evaluate(a=>pronounDrift(a.map(t=>({role:'assistant',content:t})),''),a);
+ok('guard: screenshot text',await d(BAD));ok('guard: varied',!(await d(VAR)));ok('guard: founder',!(await d(FOUNDER)));
+let m=await run(BAD);ok('hint injected',m.some(x=>/Never 'he\/his\/him'/.test(x.content)),m.slice(-3));
+ok('global rule',/The user is 'you'/.test(m[0].content)&&/Never refer to .* as he, him, his/.test(m[0].content)&&!/about him\b|answer his\b/.test(m[0].content),m[0].content.slice(-700));
+ok('late reminder rule',/never he\/him\/his/.test(m.at(-1).content),m.at(-1));
+m=await run(VAR);ok('no hint varied',!m.some(x=>/Never 'he\/his\/him'/.test(x.content)));
+await pg.evaluate(()=>{S.stallBreaker=false});m=await run(BAD);ok('toggle off',!m.some(x=>/Never 'he\/his\/him'/.test(x.content)));
+const bad=await pg.evaluate((src,exc)=>{const R=new RegExp(src,'i');const out=[];for(const c of PREMADE){for(const [k,v] of Object.entries(c)){if(typeof v!=='string')continue;let t=v;exc.forEach(e=>t=t.replace(new RegExp(e,'g'),''));if(R.test(t))out.push(c.id+'.'+k+': '+t.match(R)[0])}if(!(c.age>=21))out.push(c.id+' age')}return out},PRON3.source,EXC.map(e=>e.source));ok('premades second person',!bad.length,bad);
+const v=await pg.evaluate(()=>({d:VID_DEFAULT,m:S.rwVidModel,f:S.vidMig35,has:!!VID_MODELS['lightricks:ltx@2.3']}));ok('ltx fast default+migration',v.d==='lightricks:ltx@2.3-fast'&&v.m===v.d&&v.f&&v.has,v);
+ok('no page errors',!errs.length,errs);await ctx.close()}
+await b.close();console.log(F?F+' FAILED':'ALL PASS')})();
