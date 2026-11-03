@@ -34,7 +34,7 @@ nav button.on{color:var(--fg);font-weight:600}nav button.on .pill{background:#3a
 .msg{position:relative;margin:8px 0;padding:12px 14px;border-radius:18px;max-width:85%;line-height:1.5;overflow-wrap:anywhere}
 .msg.assistant{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:6px;padding-right:48px}
 .msg.user{background:var(--user);align-self:flex-end;border-bottom-right-radius:6px;padding-right:48px}
-.msg i{color:var(--act);font-style:italic}
+.msg i{color:var(--mut);font-style:italic}
 .msg .more{position:absolute;top:2px;right:2px;background:none;border:0;color:var(--mut);min-height:44px;min-width:44px;padding:8px}
 .msg img.gen,.msg video{width:100%;border-radius:12px;margin-top:10px;display:block}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px -34px 0 0}.tools button{flex:1 1 auto;min-height:48px;font-size:14px;padding:8px 12px}

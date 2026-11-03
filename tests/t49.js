@@ -7,7 +7,7 @@ const GOOD='Dez kills the engine and the patrol boat bumps the fender. "Fine. Sh
 for(const url of['http://localhost:8787/','http://localhost:8787/rp-studio-single.html']){const ctx=await b.createBrowserContext();const pg=await ctx.newPage();const errs=[];pg.on('pageerror',e=>errs.push(e.message));
 await pg.goto(url);await pg.evaluate(()=>localStorage.setItem('rp_age','ok'));await pg.reload();await w(800);
 await pg.evaluate(()=>addPm(['pm-dez']));await w(400);
-const r=await pg.evaluate(async(R1,R2,GOOD)=>{const c=(await all('chars')).find(x=>x.premadeId==='pm-dez');
+const r=await pg.evaluate(async(R1,R2,GOOD)=>{S.replyStyle='short';const c=(await all('chars')).find(x=>x.premadeId==='pm-dez');
  const U1='I tell you the salvage papers are mine and I\'ll call the patrol.',U2='*the patrol arrives. I explain the situation and show them my evidence...*';
  curChat={id:'t49',charId:c.id,messages:[{role:'assistant',text:c.first_mes},{role:'user',text:U1},{role:'assistant',text:R1},{role:'user',text:U2},{role:'assistant',text:''}],note:'STORY SO FAR (facts established in this chat; treat as true)\nNow: dawn, Port Marrow docks, Dez and Windier'};
  const sys=buildMessages(c,4)[0].content;
