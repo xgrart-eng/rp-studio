@@ -150,3 +150,9 @@ textarea,input{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 .ccwrap:has(.swdel:focus-visible) .ccard{transform:translateX(-88px)}
 .eddel{display:inline-flex;align-items:center;gap:6px}
 #notesheet textarea{width:100%;font-family:inherit}
+/* image lab */
+.labg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.labg label{margin:0}.labg .wide{grid-column:span 2}.labg input,.labg select{width:100%;box-sizing:border-box}
+.labgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.labgrid .fail,.labgrid .ph{margin:0}
+.labc{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.labc img{width:100%;display:block;cursor:zoom-in}
+.labc figcaption{padding:6px 8px;display:flex;flex-direction:column;gap:2px;font-size:12px;min-width:0}.labc small{color:var(--mut);overflow-wrap:anywhere}.labc .btns{gap:4px;margin-top:4px}.labc .btns button{min-height:40px;padding:4px 8px;flex:1}
+.chip.on{background:#3a2f6b;color:#d9ccff}.labfull{align-items:center;justify-content:center}.labfull img{max-width:100%;max-height:100%;object-fit:contain}
